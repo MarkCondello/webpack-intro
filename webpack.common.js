@@ -1,23 +1,14 @@
-const path = require("path")
-const HtmlWebpackPlugin = require("html-webpack-plugin")
+//const path = require("path")
 
 module.exports = {
     devtool: "none",
-    entry: "./src/index.js",
- 
-    plugins: [new HtmlWebpackPlugin({
-        template: "./src/template.html",
-    })],
+    entry: {
+       main: "./src/index.js",
+       vendor: "./src/vendor.js",
+    },
+
     module: {
         rules: [
-            {
-                test: /\.scss$/i,
-                use: [
-                    'style-loader', // injects css to the dom
-                    'css-loader', // turns css into commonjs
-                    'sass-loader' // turns scss into css - loaders load in reverse order
-                ], 
-            },
             {
                 test: /\.html$/i,
                 use: [
@@ -33,9 +24,7 @@ module.exports = {
                             outputPath: 'imgs'
                         }
                     }
-             
             }
         ],
     },
-
 }
