@@ -5,7 +5,10 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const TerserWebpackPlugin = require("terser-webpack-plugin");
-const HtmlWebpackPlugin = require("html-webpack-plugin")
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+
+const glob = require('glob');
+const PurgecssPlugin = require('purgecss-webpack-plugin');
 
 module.exports = merge(common, {
     mode: "production",
@@ -17,7 +20,19 @@ module.exports = merge(common, {
       minimizer: [
         new OptimizeCssAssetsPlugin(), 
         new TerserWebpackPlugin(),
-      ]
+      ],
+
+      //related to purge css
+      splitChunks: {
+        cacheGroups: {
+          styles: {
+            name: 'styles',
+            test: /\.css$/,
+            chunks: 'all',
+            enforce: true
+          }
+        }
+      }
     },
     plugins: [
       new MiniCssExtractPlugin({filename: "[name].[contentHash].css"}),
@@ -29,9 +44,13 @@ module.exports = merge(common, {
           removeComments: true,
           removeRedundantAttributes: true,
         }
-      })
+      }),
+      //only removes unused styles after second build
+      new PurgecssPlugin({
+        paths: glob.sync(`${path.resolve(__dirname, 'dist')}/*.html`,  { nodir: true }),
+      }),
     ],
-     module: {
+    module: {
       rules: [
         {
           test: /\.scss$/i,

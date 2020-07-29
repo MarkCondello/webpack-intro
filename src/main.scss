@@ -6,3 +6,8 @@ $danger : orange;
 body {
     background-color: orange;
 }
+
+.my-redundant-class {
+    background-color: red;
+    border: 10px solid black;
+}
